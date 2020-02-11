@@ -14,7 +14,7 @@ import { PlatformDetectorService } from 'src/app/core/plataform-detector/platfor
 export class SignupComponent implements OnInit {
     
     signupForm: FormGroup;
-    // @ViewChild('emailInput', { static: false }) emailInput: ElementRef<HTMLInputElement>;
+    @ViewChild('emailInput', { static: false }) emailInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -48,9 +48,13 @@ export class SignupComponent implements OnInit {
                 Validators.required
             ]]
         });
+        this.setFocus();
+    }
 
-        // this.platformDetectorService.ifPlatformBrowser() && 
-        //     this.emailInput.nativeElement.focus();
+    private setFocus() {
+        if ( this.platformDetectorService.ifPlatformBrowser() && this.emailInput ) {
+            this.emailInput.nativeElement.focus();
+        }
     }
 
     signup() {
@@ -62,8 +66,7 @@ export class SignupComponent implements OnInit {
                 err => {
                     console.error(err);
                     this.signupForm.reset();
-                    // this.platformDetectorService.ifPlatformBrowser() && 
-                    //     this.emailInput.nativeElement.focus();
+                    this.setFocus();
                 }
             );
     }

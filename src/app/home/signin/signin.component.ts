@@ -10,7 +10,7 @@ import { PlatformDetectorService } from 'src/app/core/plataform-detector/platfor
 export class SigninComponent implements OnInit {
 
     loginForm: FormGroup;
-    // @ViewChild('userNameInput', { static: false }) userNameInput: ElementRef<HTMLInputElement>;
+    @ViewChild('userNameInput', { static: false }) userNameInput: ElementRef<HTMLInputElement>;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -24,8 +24,14 @@ export class SigninComponent implements OnInit {
             userName: ['', Validators.required],
             password: ['', Validators.required]
         });
-        // this.platformDetectorService.ifPlatformBrowser() && 
-        //     this.userNameInput.nativeElement.focus();
+
+        this.setFocus();
+    }
+
+    private setFocus() {
+        if ( this.platformDetectorService.ifPlatformBrowser() && this.userNameInput ) {
+            this.userNameInput.nativeElement.focus();
+        }
     }
 
     login() {
@@ -37,8 +43,7 @@ export class SigninComponent implements OnInit {
             err => {
                 console.error(err);
                 this.loginForm.reset();
-                // this.platformDetectorService.ifPlatformBrowser() && 
-                //     this.userNameInput.nativeElement.focus();
+                this.setFocus();
             });
     }
 
