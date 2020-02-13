@@ -1,11 +1,13 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { lowerCaseValidator } from 'src/app/shared/validators/lower-case.validator';
-import { UserNotTakenValidatorService } from './user-not-taken.validator.service';
+import { Router } from '@angular/router';
+
 import { NewUser } from './new-user';
 import { SignupService } from './signup.service';
-import { Router } from '@angular/router';
+import { lowerCaseValidator } from 'src/app/shared/validators/lower-case.validator';
+import { UserNotTakenValidatorService } from './user-not-taken.validator.service';
 import { PlatformDetectorService } from 'src/app/core/plataform-detector/platform-detector.service';
+import { userNamePasswordValidator } from './username-password.validator';
 
 @Component({
     templateUrl: './signup.component.html',
@@ -47,6 +49,9 @@ export class SignupComponent implements OnInit {
                 Validators.maxLength(14),
                 Validators.required
             ]]
+        },
+        {
+            validator: userNamePasswordValidator
         });
         this.setFocus();
     }
@@ -58,16 +63,18 @@ export class SignupComponent implements OnInit {
     }
 
     signup() {
-        const newUser = this.signupForm.getRawValue() as NewUser;
-        this.signupService
-            .signup(newUser)
-            .subscribe(
-                () => this.router.navigate(['']),
-                err => {
-                    console.error(err);
-                    this.signupForm.reset();
-                    this.setFocus();
-                }
-            );
+        if (this.signupForm.valid && !this.signupForm.pending) {
+            const newUser = this.signupForm.getRawValue() as NewUser;
+            this.signupService
+                .signup(newUser)
+                .subscribe(
+                    () => this.router.navigate(['']),
+                    err => {
+                        console.error(err);
+                        this.signupForm.reset();
+                        this.setFocus();
+                    }
+                );
+        }
     }
 }
